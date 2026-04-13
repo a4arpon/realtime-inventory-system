@@ -1,22 +1,18 @@
 import { PrismaPg } from "@prisma/adapter-pg"
 
-const adapter = new PrismaPg({ connectionString })
+import { PrismaClient } from "#app/utils/prisma/client"
 
-export const prisma = new PrismaClient({
-  log: ["error", "warn"],
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL
-    }
-  }
-})
+import { ENV } from "./env"
 
-// Connection pool for production
-if (process.env.NODE_ENV === "production") {
-  prisma.$connect()
+const adapter = new PrismaPg({ connectionString: ENV.DATABASE_URL })
+
+export const prisma = new PrismaClient({ adapter })
+
+export async function disconnectDb() {
+  await prisma.$disconnect()
 }
 
-// Graceful shutdown
-export async function disconnect() {
-  await prisma.$disconnect()
+export async function connectDb() {
+  await prisma.$connect()
+  console.log("Database connected...")
 }

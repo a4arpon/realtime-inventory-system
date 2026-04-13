@@ -10,17 +10,20 @@
     "dev": "node --import=tsx --env-file=.env --watch src/serve.ts",
     "build": "node esbuild.js",
     "start": "node dist/server.js",
-    "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate",
-    "db:seed": "node --import=tsx --env-file=.env prisma/seed.ts"
+    "db:migrate": "node --env-file=.env node_modules/.bin/prisma migrate dev",
+    "db:generate": "node --env-file=.env node_modules/.bin/prisma generate",
+    "db:seed": "node --env-file=.env ./prisma/seed.js",
+    "db:fmt": "node --env-file=.env node_modules/.bin/prisma format"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.2",
     "helmet": "^8.1.0",
     "morgan": "^1.10.1",
+    "pg": "^8.20.0",
     "socket.io": "^4.8.3",
     "zod": "^4.3.6"
   },
@@ -29,6 +32,7 @@
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
     "esbuild": "^0.28.0",
     "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",

@@ -1,31 +1,33 @@
+// oxlint-disable no-console
 import http from "node:http"
 
 import { app } from "./app"
+import { connectDb, disconnectDb } from "./config/database"
 import { ENV } from "./config/env"
 
 const server = http.createServer(app)
 
-server.listen(ENV.PORT, () => {
+server.listen(ENV.PORT, async () => {
+  await connectDb()
+
   console.log(
     `${ENV.isProd ? "Production" : "Development"} Server running on http://localhost:${ENV.PORT}`
   )
 })
 
-if (!ENV.isProd) {
-  process.on("SIGTERM", () => process.exit(0))
-  process.on("SIGINT", () => process.exit(0))
-} else {
+if (ENV.isProd) {
   let isShuttingDown = false
 
-  async function gracefulShutdown(signal: string) {
+  const gracefulShutdown = (signal: string) => {
     if (isShuttingDown) return
     isShuttingDown = true
 
     console.log(`${signal} received. Shutting down...`)
 
-    server.close(() => {
-      console.log("HTTP server closed")
+    server.close(async () => {
+      await disconnectDb()
 
+      console.log("HTTP server closed")
       process.exit(0)
     })
 
@@ -37,6 +39,9 @@ if (!ENV.isProd) {
 
   process.on("SIGTERM", () => gracefulShutdown("SIGTERM"))
   process.on("SIGINT", () => gracefulShutdown("SIGINT"))
+} else {
+  process.on("SIGTERM", () => process.exit(0))
+  process.on("SIGINT", () => process.exit(0))
 }
 
 process.on("unhandledRejection", (reason) => {

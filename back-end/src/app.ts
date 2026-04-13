@@ -9,7 +9,7 @@ import { AppError, BadRequestError, response } from "./utils/http"
 
 export const app = express()
 
-app.use(express.json({ limit: "1mb" }))
+app.use(express.json({ limit: "1mb", strict: true }))
 app.use(cors({ origin: process.env.FRONTEND_URL }))
 app.use(
   helmet({
@@ -19,8 +19,10 @@ app.use(
 )
 app.use(
   rateLimit({
-    windowMs: 60 * 1000, // 60s
-    max: 30, // 30 rpS
+    // 60s
+    windowMs: 60 * 1000,
+    // 30 rpS
+    max: 30,
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: "Too many requests" }

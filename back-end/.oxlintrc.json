@@ -5,8 +5,7 @@
     "correctness": "error",
     "suspicious": "error",
     "pedantic": "warn",
-    "perf": "error",
-    "restriction": "off"
+    "perf": "error"
   },
   "rules": {
     "no-console": "warn",
@@ -17,19 +16,17 @@
     "import/no-cycle": "error",
     "import/no-duplicates": "error",
 
-    "jsdoc/require-jsdoc": "off",
-    "jsdoc/no-types": "error",
     "max-lines-per-function": "off"
   },
-  "settings": {
-    "jsdoc": {
-      "ignorePrivate": true,
-      "ignoreInternal": true
-    }
-  },
+  "settings": {},
   "env": {
     "builtin": true
   },
   "globals": {},
-  "ignorePatterns": ["node_modules", "dist", "package.lock.json"]
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "package.lock.json",
+    "./src/utils/prisma"
+  ]
 }
