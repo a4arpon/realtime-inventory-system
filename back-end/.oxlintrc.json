@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc", "node"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "warn",
+    "perf": "error",
+    "restriction": "off"
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": "error",
+    "no-explicit-any": "error",
+    "no-non-null-assertion": "error",
+
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+
+    "jsdoc/require-jsdoc": "off",
+    "jsdoc/no-types": "error",
+    "max-lines-per-function": "off"
+  },
+  "settings": {
+    "jsdoc": {
+      "ignorePrivate": true,
+      "ignoreInternal": true
+    }
+  },
+  "env": {
+    "builtin": true
+  },
+  "globals": {},
+  "ignorePatterns": ["node_modules", "dist", "package.lock.json"]
+}

@@ -1,0 +1,15 @@
+type: workspace
+model: workspace
+id: wk_rnrNyJVkZF
+createdAt: 2026-04-13T12:14:41.932658118
+updatedAt: 2026-04-13T12:18:20.404621170
+authentication: {}
+authenticationType: null
+description: ''
+headers: []
+name: Techzu Api Docs
+encryptionKeyChallenge: null
+settingValidateCertificates: true
+settingFollowRedirects: true
+settingRequestTimeout: 0
+settingDnsOverrides: []
