@@ -27,13 +27,13 @@ export type AggregateDrop = {
 }
 
 export type DropAvgAggregateOutputType = {
-  priceCents: number | null
+  price: runtime.Decimal | null
   totalStock: number | null
   availableStock: number | null
 }
 
 export type DropSumAggregateOutputType = {
-  priceCents: number | null
+  price: runtime.Decimal | null
   totalStock: number | null
   availableStock: number | null
 }
@@ -41,7 +41,7 @@ export type DropSumAggregateOutputType = {
 export type DropMinAggregateOutputType = {
   id: string | null
   name: string | null
-  priceCents: number | null
+  price: runtime.Decimal | null
   totalStock: number | null
   availableStock: number | null
   createdAt: Date | null
@@ -50,7 +50,7 @@ export type DropMinAggregateOutputType = {
 export type DropMaxAggregateOutputType = {
   id: string | null
   name: string | null
-  priceCents: number | null
+  price: runtime.Decimal | null
   totalStock: number | null
   availableStock: number | null
   createdAt: Date | null
@@ -59,7 +59,7 @@ export type DropMaxAggregateOutputType = {
 export type DropCountAggregateOutputType = {
   id: number
   name: number
-  priceCents: number
+  price: number
   totalStock: number
   availableStock: number
   createdAt: number
@@ -68,13 +68,13 @@ export type DropCountAggregateOutputType = {
 
 
 export type DropAvgAggregateInputType = {
-  priceCents?: true
+  price?: true
   totalStock?: true
   availableStock?: true
 }
 
 export type DropSumAggregateInputType = {
-  priceCents?: true
+  price?: true
   totalStock?: true
   availableStock?: true
 }
@@ -82,7 +82,7 @@ export type DropSumAggregateInputType = {
 export type DropMinAggregateInputType = {
   id?: true
   name?: true
-  priceCents?: true
+  price?: true
   totalStock?: true
   availableStock?: true
   createdAt?: true
@@ -91,7 +91,7 @@ export type DropMinAggregateInputType = {
 export type DropMaxAggregateInputType = {
   id?: true
   name?: true
-  priceCents?: true
+  price?: true
   totalStock?: true
   availableStock?: true
   createdAt?: true
@@ -100,7 +100,7 @@ export type DropMaxAggregateInputType = {
 export type DropCountAggregateInputType = {
   id?: true
   name?: true
-  priceCents?: true
+  price?: true
   totalStock?: true
   availableStock?: true
   createdAt?: true
@@ -196,7 +196,7 @@ export type DropGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type DropGroupByOutputType = {
   id: string
   name: string
-  priceCents: number
+  price: runtime.Decimal
   totalStock: number
   availableStock: number
   createdAt: Date
@@ -228,7 +228,7 @@ export type DropWhereInput = {
   NOT?: Prisma.DropWhereInput | Prisma.DropWhereInput[]
   id?: Prisma.StringFilter<"Drop"> | string
   name?: Prisma.StringFilter<"Drop"> | string
-  priceCents?: Prisma.IntFilter<"Drop"> | number
+  price?: Prisma.DecimalFilter<"Drop"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFilter<"Drop"> | number
   availableStock?: Prisma.IntFilter<"Drop"> | number
   createdAt?: Prisma.DateTimeFilter<"Drop"> | Date | string
@@ -239,7 +239,7 @@ export type DropWhereInput = {
 export type DropOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -253,7 +253,7 @@ export type DropWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.DropWhereInput[]
   NOT?: Prisma.DropWhereInput | Prisma.DropWhereInput[]
   name?: Prisma.StringFilter<"Drop"> | string
-  priceCents?: Prisma.IntFilter<"Drop"> | number
+  price?: Prisma.DecimalFilter<"Drop"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFilter<"Drop"> | number
   availableStock?: Prisma.IntFilter<"Drop"> | number
   createdAt?: Prisma.DateTimeFilter<"Drop"> | Date | string
@@ -264,7 +264,7 @@ export type DropWhereUniqueInput = Prisma.AtLeast<{
 export type DropOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -281,7 +281,7 @@ export type DropScalarWhereWithAggregatesInput = {
   NOT?: Prisma.DropScalarWhereWithAggregatesInput | Prisma.DropScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Drop"> | string
   name?: Prisma.StringWithAggregatesFilter<"Drop"> | string
-  priceCents?: Prisma.IntWithAggregatesFilter<"Drop"> | number
+  price?: Prisma.DecimalWithAggregatesFilter<"Drop"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntWithAggregatesFilter<"Drop"> | number
   availableStock?: Prisma.IntWithAggregatesFilter<"Drop"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Drop"> | Date | string
@@ -290,9 +290,9 @@ export type DropScalarWhereWithAggregatesInput = {
 export type DropCreateInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
   reservations?: Prisma.ReservationCreateNestedManyWithoutDropInput
   purchases?: Prisma.PurchaseCreateNestedManyWithoutDropInput
@@ -301,9 +301,9 @@ export type DropCreateInput = {
 export type DropUncheckedCreateInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
   reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutDropInput
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutDropInput
@@ -312,7 +312,7 @@ export type DropUncheckedCreateInput = {
 export type DropUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -323,7 +323,7 @@ export type DropUpdateInput = {
 export type DropUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,16 +334,16 @@ export type DropUncheckedUpdateInput = {
 export type DropCreateManyInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
 }
 
 export type DropUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -352,7 +352,7 @@ export type DropUpdateManyMutationInput = {
 export type DropUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -361,14 +361,14 @@ export type DropUncheckedUpdateManyInput = {
 export type DropCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type DropAvgOrderByAggregateInput = {
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
 }
@@ -376,7 +376,7 @@ export type DropAvgOrderByAggregateInput = {
 export type DropMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -385,14 +385,14 @@ export type DropMaxOrderByAggregateInput = {
 export type DropMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type DropSumOrderByAggregateInput = {
-  priceCents?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   totalStock?: Prisma.SortOrder
   availableStock?: Prisma.SortOrder
 }
@@ -404,6 +404,14 @@ export type DropScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -449,9 +457,9 @@ export type DropUpdateOneRequiredWithoutPurchasesNestedInput = {
 export type DropCreateWithoutReservationsInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
   purchases?: Prisma.PurchaseCreateNestedManyWithoutDropInput
 }
@@ -459,9 +467,9 @@ export type DropCreateWithoutReservationsInput = {
 export type DropUncheckedCreateWithoutReservationsInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutDropInput
 }
@@ -485,7 +493,7 @@ export type DropUpdateToOneWithWhereWithoutReservationsInput = {
 export type DropUpdateWithoutReservationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -495,7 +503,7 @@ export type DropUpdateWithoutReservationsInput = {
 export type DropUncheckedUpdateWithoutReservationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -505,9 +513,9 @@ export type DropUncheckedUpdateWithoutReservationsInput = {
 export type DropCreateWithoutPurchasesInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
   reservations?: Prisma.ReservationCreateNestedManyWithoutDropInput
 }
@@ -515,9 +523,9 @@ export type DropCreateWithoutPurchasesInput = {
 export type DropUncheckedCreateWithoutPurchasesInput = {
   id?: string
   name: string
-  priceCents: number
-  totalStock: number
-  availableStock: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalStock?: number
+  availableStock?: number
   createdAt?: Date | string
   reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutDropInput
 }
@@ -541,7 +549,7 @@ export type DropUpdateToOneWithWhereWithoutPurchasesInput = {
 export type DropUpdateWithoutPurchasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -551,7 +559,7 @@ export type DropUpdateWithoutPurchasesInput = {
 export type DropUncheckedUpdateWithoutPurchasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalStock?: Prisma.IntFieldUpdateOperationsInput | number
   availableStock?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -601,7 +609,7 @@ export type DropCountOutputTypeCountPurchasesArgs<ExtArgs extends runtime.Types.
 export type DropSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  priceCents?: boolean
+  price?: boolean
   totalStock?: boolean
   availableStock?: boolean
   createdAt?: boolean
@@ -613,7 +621,7 @@ export type DropSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type DropSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  priceCents?: boolean
+  price?: boolean
   totalStock?: boolean
   availableStock?: boolean
   createdAt?: boolean
@@ -622,7 +630,7 @@ export type DropSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type DropSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  priceCents?: boolean
+  price?: boolean
   totalStock?: boolean
   availableStock?: boolean
   createdAt?: boolean
@@ -631,13 +639,13 @@ export type DropSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type DropSelectScalar = {
   id?: boolean
   name?: boolean
-  priceCents?: boolean
+  price?: boolean
   totalStock?: boolean
   availableStock?: boolean
   createdAt?: boolean
 }
 
-export type DropOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "priceCents" | "totalStock" | "availableStock" | "createdAt", ExtArgs["result"]["drop"]>
+export type DropOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "totalStock" | "availableStock" | "createdAt", ExtArgs["result"]["drop"]>
 export type DropInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reservations?: boolean | Prisma.Drop$reservationsArgs<ExtArgs>
   purchases?: boolean | Prisma.Drop$purchasesArgs<ExtArgs>
@@ -655,7 +663,7 @@ export type $DropPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    priceCents: number
+    price: runtime.Decimal
     totalStock: number
     availableStock: number
     createdAt: Date
@@ -1086,7 +1094,7 @@ export interface Prisma__DropClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface DropFieldRefs {
   readonly id: Prisma.FieldRef<"Drop", 'String'>
   readonly name: Prisma.FieldRef<"Drop", 'String'>
-  readonly priceCents: Prisma.FieldRef<"Drop", 'Int'>
+  readonly price: Prisma.FieldRef<"Drop", 'Decimal'>
   readonly totalStock: Prisma.FieldRef<"Drop", 'Int'>
   readonly availableStock: Prisma.FieldRef<"Drop", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Drop", 'DateTime'>

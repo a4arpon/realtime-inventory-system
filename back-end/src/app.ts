@@ -5,18 +5,33 @@ import helmet from "helmet"
 import morgan from "morgan"
 
 import { errorHandler } from "./middleware/error"
+import { adminDropEventsRoutes } from "./routes/admin-drop-events"
 import { AppError, BadRequestError, response } from "./utils/http"
 
 export const app = express()
 
 app.use(express.json({ limit: "1mb", strict: true }))
-app.use(cors({ origin: process.env.FRONTEND_URL }))
+
+// Only GET, POST, DELETE methods are allowed
+// To reduce the attack surface and reducing options to
+// pick from bunch of HTTP methods to save time.
+app.use(
+  cors({ origin: process.env.FRONTEND_URL, methods: ["GET", "POST", "DELETE"] })
+)
+
 app.use(
   helmet({
     contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: false,
+    xPoweredBy: false,
+    noSniff: true,
+    frameguard: {
+      action: "deny"
+    },
+    xXssProtection: true
   })
 )
+
 app.use(
   rateLimit({
     // 60s
@@ -28,6 +43,7 @@ app.use(
     message: { error: "Too many requests" }
   })
 )
+
 app.use(morgan("dev"))
 
 app.get("/", (_req, res) => {
@@ -41,6 +57,16 @@ app.get("/", (_req, res) => {
 app.get("/error", (_req, _res) => {
   throw new BadRequestError("Error !!!")
 })
+
+// ----------------------------------------------------------------
+// Application routes
+// ----------------------------------------------------------------
+
+app.use("/admin-drops", adminDropEventsRoutes)
+
+// ----------------------------------------------------------------
+// Error handling
+// ----------------------------------------------------------------
 
 app.use((req) => {
   throw new AppError(`Cannot ${req.method} ${req.path}`, 404)

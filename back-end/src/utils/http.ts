@@ -1,4 +1,16 @@
 import type { NextFunction, Request, Response } from "express"
+type ResponseT = {
+  success: boolean
+  message: string
+  data: object | null
+  extra: {
+    pagination?: {
+      limit: number
+      page: number
+      total: number
+    }
+  } | null
+}
 
 export const response = (props: {
   message?: string
@@ -11,7 +23,7 @@ export const response = (props: {
       total: number
     }
   }
-}) => {
+}): ResponseT => {
   return {
     success: props.success ?? true,
     message: props.message || "Success",
@@ -41,8 +53,9 @@ export class UnauthorizedError extends AppError {
 }
 
 export const apiHandler =
-  (fn: any) => (req: Request, res: Response, next: NextFunction) =>
-    Promise.resolve(fn(req, res, next))
+  (fn: (req: Request) => Promise<ResponseT>) =>
+  (req: Request, res: Response, next: NextFunction) =>
+    Promise.resolve(fn(req))
       .then((result) => {
         if (result !== undefined) {
           res.json(result)

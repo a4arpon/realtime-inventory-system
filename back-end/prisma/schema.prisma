@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/utils/prisma"
+  output   = "./output"
 }
 
 datasource db {
@@ -14,11 +14,11 @@ enum ReservationStatus {
 }
 
 model Drop {
-  id             String @id @default(uuid())
+  id             String  @id @default(uuid())
   name           String
-  priceCents     Int
-  totalStock     Int
-  availableStock Int
+  price          Decimal @db.Decimal(10, 2)
+  totalStock     Int     @default(0)
+  availableStock Int     @default(0)
 
   // purchases      Purchase[]
   createdAt    DateTime      @default(now())

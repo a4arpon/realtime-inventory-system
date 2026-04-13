@@ -76,7 +76,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const DropScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  priceCents: 'priceCents',
+  price: 'price',
   totalStock: 'totalStock',
   availableStock: 'availableStock',
   createdAt: 'createdAt'

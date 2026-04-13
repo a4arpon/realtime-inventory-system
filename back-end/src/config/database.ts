@@ -1,18 +1,17 @@
+import { PrismaClient } from "@local-prisma-client"
 import { PrismaPg } from "@prisma/adapter-pg"
-
-import { PrismaClient } from "#app/utils/prisma/client"
 
 import { ENV } from "./env"
 
 const adapter = new PrismaPg({ connectionString: ENV.DATABASE_URL })
 
-export const prisma = new PrismaClient({ adapter })
+export const pSql = new PrismaClient({ adapter })
 
 export async function disconnectDb() {
-  await prisma.$disconnect()
+  await pSql.$disconnect()
 }
 
 export async function connectDb() {
-  await prisma.$connect()
+  await pSql.$connect()
   console.log("Database connected...")
 }
