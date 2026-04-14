@@ -77,7 +77,6 @@ export const DropScalarFieldEnum = {
   id: 'id',
   name: 'name',
   price: 'price',
-  totalStock: 'totalStock',
   availableStock: 'availableStock',
   createdAt: 'createdAt'
 } as const

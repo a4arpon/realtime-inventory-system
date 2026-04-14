@@ -14,11 +14,10 @@ enum ReservationStatus {
 }
 
 model Drop {
-  id             String  @id @default(uuid())
+  id             String @id @default(uuid())
   name           String
-  price          Decimal @db.Decimal(10, 2)
-  totalStock     Int     @default(0)
-  availableStock Int     @default(0)
+  price          Float
+  availableStock Int    @default(0)
 
   // purchases      Purchase[]
   createdAt    DateTime      @default(now())
