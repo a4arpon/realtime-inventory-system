@@ -36,9 +36,10 @@ model User {
 }
 
 model Reservation {
-  id     String @id @default(uuid())
-  userId String
-  dropId String
+  id       String @id @default(uuid())
+  userId   String
+  dropId   String
+  quantity Int    @default(1)
 
   createdAt DateTime          @default(now())
   expiresAt DateTime          @default(now())
@@ -54,8 +55,9 @@ model Reservation {
 model Purchase {
   id String @id @default(uuid())
 
-  userId String
-  dropId String
+  userId   String
+  dropId   String
+  quantity Int    @default(1)
 
   user User @relation(fields: [userId], references: [id])
   drop Drop @relation(fields: [dropId], references: [id])

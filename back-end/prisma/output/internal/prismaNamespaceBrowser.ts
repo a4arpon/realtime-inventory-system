@@ -97,6 +97,7 @@ export const ReservationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   dropId: 'dropId',
+  quantity: 'quantity',
   createdAt: 'createdAt',
   expiresAt: 'expiresAt',
   status: 'status'
@@ -109,6 +110,7 @@ export const PurchaseScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   dropId: 'dropId',
+  quantity: 'quantity',
   purchasedAt: 'purchasedAt',
   createdAt: 'createdAt'
 } as const

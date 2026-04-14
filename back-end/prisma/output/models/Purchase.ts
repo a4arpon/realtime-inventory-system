@@ -20,14 +20,25 @@ export type PurchaseModel = runtime.Types.Result.DefaultSelection<Prisma.$Purcha
 
 export type AggregatePurchase = {
   _count: PurchaseCountAggregateOutputType | null
+  _avg: PurchaseAvgAggregateOutputType | null
+  _sum: PurchaseSumAggregateOutputType | null
   _min: PurchaseMinAggregateOutputType | null
   _max: PurchaseMaxAggregateOutputType | null
+}
+
+export type PurchaseAvgAggregateOutputType = {
+  quantity: number | null
+}
+
+export type PurchaseSumAggregateOutputType = {
+  quantity: number | null
 }
 
 export type PurchaseMinAggregateOutputType = {
   id: string | null
   userId: string | null
   dropId: string | null
+  quantity: number | null
   purchasedAt: Date | null
   createdAt: Date | null
 }
@@ -36,6 +47,7 @@ export type PurchaseMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   dropId: string | null
+  quantity: number | null
   purchasedAt: Date | null
   createdAt: Date | null
 }
@@ -44,16 +56,26 @@ export type PurchaseCountAggregateOutputType = {
   id: number
   userId: number
   dropId: number
+  quantity: number
   purchasedAt: number
   createdAt: number
   _all: number
 }
 
 
+export type PurchaseAvgAggregateInputType = {
+  quantity?: true
+}
+
+export type PurchaseSumAggregateInputType = {
+  quantity?: true
+}
+
 export type PurchaseMinAggregateInputType = {
   id?: true
   userId?: true
   dropId?: true
+  quantity?: true
   purchasedAt?: true
   createdAt?: true
 }
@@ -62,6 +84,7 @@ export type PurchaseMaxAggregateInputType = {
   id?: true
   userId?: true
   dropId?: true
+  quantity?: true
   purchasedAt?: true
   createdAt?: true
 }
@@ -70,6 +93,7 @@ export type PurchaseCountAggregateInputType = {
   id?: true
   userId?: true
   dropId?: true
+  quantity?: true
   purchasedAt?: true
   createdAt?: true
   _all?: true
@@ -113,6 +137,18 @@ export type PurchaseAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: PurchaseAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: PurchaseSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: PurchaseMinAggregateInputType
@@ -143,6 +179,8 @@ export type PurchaseGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: PurchaseCountAggregateInputType | true
+  _avg?: PurchaseAvgAggregateInputType
+  _sum?: PurchaseSumAggregateInputType
   _min?: PurchaseMinAggregateInputType
   _max?: PurchaseMaxAggregateInputType
 }
@@ -151,9 +189,12 @@ export type PurchaseGroupByOutputType = {
   id: string
   userId: string
   dropId: string
+  quantity: number
   purchasedAt: Date
   createdAt: Date
   _count: PurchaseCountAggregateOutputType | null
+  _avg: PurchaseAvgAggregateOutputType | null
+  _sum: PurchaseSumAggregateOutputType | null
   _min: PurchaseMinAggregateOutputType | null
   _max: PurchaseMaxAggregateOutputType | null
 }
@@ -180,6 +221,7 @@ export type PurchaseWhereInput = {
   id?: Prisma.StringFilter<"Purchase"> | string
   userId?: Prisma.StringFilter<"Purchase"> | string
   dropId?: Prisma.StringFilter<"Purchase"> | string
+  quantity?: Prisma.IntFilter<"Purchase"> | number
   purchasedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -190,6 +232,7 @@ export type PurchaseOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   dropId?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -203,6 +246,7 @@ export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PurchaseWhereInput | Prisma.PurchaseWhereInput[]
   userId?: Prisma.StringFilter<"Purchase"> | string
   dropId?: Prisma.StringFilter<"Purchase"> | string
+  quantity?: Prisma.IntFilter<"Purchase"> | number
   purchasedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -213,11 +257,14 @@ export type PurchaseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   dropId?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PurchaseCountOrderByAggregateInput
+  _avg?: Prisma.PurchaseAvgOrderByAggregateInput
   _max?: Prisma.PurchaseMaxOrderByAggregateInput
   _min?: Prisma.PurchaseMinOrderByAggregateInput
+  _sum?: Prisma.PurchaseSumOrderByAggregateInput
 }
 
 export type PurchaseScalarWhereWithAggregatesInput = {
@@ -227,12 +274,14 @@ export type PurchaseScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
   dropId?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
+  quantity?: Prisma.IntWithAggregatesFilter<"Purchase"> | number
   purchasedAt?: Prisma.DateTimeWithAggregatesFilter<"Purchase"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Purchase"> | Date | string
 }
 
 export type PurchaseCreateInput = {
   id?: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPurchasesInput
@@ -243,12 +292,14 @@ export type PurchaseUncheckedCreateInput = {
   id?: string
   userId: string
   dropId: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type PurchaseUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
@@ -259,6 +310,7 @@ export type PurchaseUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   dropId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -267,12 +319,14 @@ export type PurchaseCreateManyInput = {
   id?: string
   userId: string
   dropId: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type PurchaseUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -281,6 +335,7 @@ export type PurchaseUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   dropId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -299,14 +354,20 @@ export type PurchaseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   dropId?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type PurchaseAvgOrderByAggregateInput = {
+  quantity?: Prisma.SortOrder
 }
 
 export type PurchaseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   dropId?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -315,8 +376,13 @@ export type PurchaseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   dropId?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
   purchasedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type PurchaseSumOrderByAggregateInput = {
+  quantity?: Prisma.SortOrder
 }
 
 export type PurchaseCreateNestedManyWithoutDropInput = {
@@ -405,6 +471,7 @@ export type PurchaseUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type PurchaseCreateWithoutDropInput = {
   id?: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPurchasesInput
@@ -413,6 +480,7 @@ export type PurchaseCreateWithoutDropInput = {
 export type PurchaseUncheckedCreateWithoutDropInput = {
   id?: string
   userId: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
 }
@@ -450,12 +518,14 @@ export type PurchaseScalarWhereInput = {
   id?: Prisma.StringFilter<"Purchase"> | string
   userId?: Prisma.StringFilter<"Purchase"> | string
   dropId?: Prisma.StringFilter<"Purchase"> | string
+  quantity?: Prisma.IntFilter<"Purchase"> | number
   purchasedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
 }
 
 export type PurchaseCreateWithoutUserInput = {
   id?: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
   drop: Prisma.DropCreateNestedOneWithoutPurchasesInput
@@ -464,6 +534,7 @@ export type PurchaseCreateWithoutUserInput = {
 export type PurchaseUncheckedCreateWithoutUserInput = {
   id?: string
   dropId: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
 }
@@ -497,12 +568,14 @@ export type PurchaseUpdateManyWithWhereWithoutUserInput = {
 export type PurchaseCreateManyDropInput = {
   id?: string
   userId: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type PurchaseUpdateWithoutDropInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
@@ -511,6 +584,7 @@ export type PurchaseUpdateWithoutDropInput = {
 export type PurchaseUncheckedUpdateWithoutDropInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -518,6 +592,7 @@ export type PurchaseUncheckedUpdateWithoutDropInput = {
 export type PurchaseUncheckedUpdateManyWithoutDropInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -525,12 +600,14 @@ export type PurchaseUncheckedUpdateManyWithoutDropInput = {
 export type PurchaseCreateManyUserInput = {
   id?: string
   dropId: string
+  quantity?: number
   purchasedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type PurchaseUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   drop?: Prisma.DropUpdateOneRequiredWithoutPurchasesNestedInput
@@ -539,6 +616,7 @@ export type PurchaseUpdateWithoutUserInput = {
 export type PurchaseUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dropId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -546,6 +624,7 @@ export type PurchaseUncheckedUpdateWithoutUserInput = {
 export type PurchaseUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dropId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
   purchasedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -556,6 +635,7 @@ export type PurchaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   userId?: boolean
   dropId?: boolean
+  quantity?: boolean
   purchasedAt?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -566,6 +646,7 @@ export type PurchaseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   userId?: boolean
   dropId?: boolean
+  quantity?: boolean
   purchasedAt?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -576,6 +657,7 @@ export type PurchaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   userId?: boolean
   dropId?: boolean
+  quantity?: boolean
   purchasedAt?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -586,11 +668,12 @@ export type PurchaseSelectScalar = {
   id?: boolean
   userId?: boolean
   dropId?: boolean
+  quantity?: boolean
   purchasedAt?: boolean
   createdAt?: boolean
 }
 
-export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "dropId" | "purchasedAt" | "createdAt", ExtArgs["result"]["purchase"]>
+export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "dropId" | "quantity" | "purchasedAt" | "createdAt", ExtArgs["result"]["purchase"]>
 export type PurchaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   drop?: boolean | Prisma.DropDefaultArgs<ExtArgs>
@@ -614,6 +697,7 @@ export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     userId: string
     dropId: string
+    quantity: number
     purchasedAt: Date
     createdAt: Date
   }, ExtArgs["result"]["purchase"]>
@@ -1044,6 +1128,7 @@ export interface PurchaseFieldRefs {
   readonly id: Prisma.FieldRef<"Purchase", 'String'>
   readonly userId: Prisma.FieldRef<"Purchase", 'String'>
   readonly dropId: Prisma.FieldRef<"Purchase", 'String'>
+  readonly quantity: Prisma.FieldRef<"Purchase", 'Int'>
   readonly purchasedAt: Prisma.FieldRef<"Purchase", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Purchase", 'DateTime'>
 }

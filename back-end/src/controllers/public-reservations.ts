@@ -12,7 +12,10 @@ async function purchaseReservedDrop(req) {
   })
 }
 
+async function createReservation() {}
+
 export const publicReservationsController = {
   myReservations: apiHandler(myReservations),
-  purchaseReservedDrop: apiHandler(purchaseReservedDrop)
+  purchaseReservedDrop: apiHandler(purchaseReservedDrop),
+  createReservation: apiHandler(createReservation)
 }
