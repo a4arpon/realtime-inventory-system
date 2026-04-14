@@ -1,25 +1,42 @@
 import type { Request } from "express"
-import type { z } from "zod/mini"
+import { z } from "zod/mini"
 
+import { pSql } from "#app/config/database"
 import { atomicReserve } from "#app/services/reservation.services"
 import { getUser } from "#app/services/users.services"
-import { apiHandler, response } from "#app/utils/http"
-import type { uuidParamSchema } from "#app/validators/common"
+import {
+  apiHandler,
+  BadRequestError,
+  response,
+  UnauthorizedError
+} from "#app/utils/http"
+import type { dropIdSchema, reserveIdSchema } from "#app/validators/common"
 
-async function myReservations() {
-  return response({
-    message: "hello world"
+async function myReservations(req: Request) {
+  const sessionId = req.sessionId
+
+  const userId = await getUser(sessionId)
+
+  const reservations = await pSql.reservation.findMany({
+    where: {
+      userId: userId
+    },
+    include: {
+      drop: true
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
   })
-}
 
-async function purchaseReservedDrop() {
   return response({
-    message: ""
+    message: "ok",
+    data: reservations
   })
 }
 
 async function createReservation(req: Request) {
-  const { id: dropId } = req.body as z.infer<typeof uuidParamSchema>
+  const { dropId } = req.body as z.infer<typeof dropIdSchema>
   const sessionId = req.sessionId
 
   const user = await getUser(sessionId)
@@ -28,6 +45,53 @@ async function createReservation(req: Request) {
   return response({
     message: "Reservation created",
     data: reservation
+  })
+}
+
+async function purchaseReservedDrop(req: Request) {
+  const sessionId = req.sessionId
+  const { reserveId } = req.body as z.infer<typeof reserveIdSchema>
+
+  const userId = await getUser(sessionId)
+
+  const trxResult = await pSql.$transaction(async (trx) => {
+    const reservation = await trx.reservation.findUnique({
+      where: { id: reserveId },
+      include: {
+        drop: true
+      }
+    })
+
+    if (!reservation) throw new BadRequestError("reservation: Not found")
+    if (reservation.userId !== userId) throw new UnauthorizedError("Not yours")
+    if (reservation.status !== "active") throw new BadRequestError("Not active")
+    if (reservation.expiresAt < new Date()) throw new BadRequestError("Expired")
+
+    const purchase = await trx.purchase.create({
+      data: {
+        userId,
+        dropId: reservation.dropId,
+        quantity: reservation.quantity
+      }
+    })
+
+    await trx.reservation.update({
+      where: { id: reserveId },
+      data: { status: "completed" }
+    })
+
+    return {
+      purchaseId: purchase.id,
+      dropId: reservation?.dropId,
+      drop: reservation.drop?.name,
+      quantity: reservation?.quantity,
+      price: reservation?.drop?.price
+    }
+  })
+
+  return response({
+    message: "ok",
+    data: trxResult
   })
 }
 

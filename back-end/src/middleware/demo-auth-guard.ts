@@ -10,7 +10,7 @@ declare global {
     }
   }
 }
-const sessionIdSchema = z.uuid()
+const sessionIdSchema = z.string().check(z.length(48))
 
 export function authGuard(req: Request, _res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization

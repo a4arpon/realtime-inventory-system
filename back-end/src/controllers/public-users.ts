@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto"
+import { randomBytes } from "node:crypto"
 
 import randomName from "@scaleway/random-name"
 
@@ -7,7 +7,7 @@ import { apiHandler, response } from "#app/utils/http"
 
 async function createUser() {
   const data = {
-    sessionId: randomUUID(),
+    sessionId: randomBytes(24)?.toString("hex"),
     username: randomName("", "_")
   }
 

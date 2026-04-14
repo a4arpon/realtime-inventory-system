@@ -7,11 +7,21 @@ async function getDrops() {
       purchases: {
         take: 3,
         orderBy: { purchasedAt: "desc" },
-        include: {
+
+        select: {
+          purchasedAt: true,
           user: {
-            select: { username: true }
+            select: {
+              username: true
+            }
           }
         }
+        // include: {
+
+        //   user: {
+        //     select: { username: true }
+        //   }
+        // }
       }
     }
   })
