@@ -7,6 +7,7 @@ import morgan from "morgan"
 import { ENV } from "./config/env"
 import { errorHandler } from "./middleware/error"
 import { adminDropEventsRoutes } from "./routes/admin-drop-events"
+import { publicDropEventsRoutes } from "./routes/public-drop-events"
 import { AppError, BadRequestError, response } from "./utils/http"
 
 export const app = express()
@@ -54,7 +55,7 @@ app.get("/", (_req, res) => {
 })
 
 app.get("/error", (_req, _res) => {
-  throw new BadRequestError("Error !!!")
+  throw new BadRequestError("Nuke this world !!!")
 })
 
 // ----------------------------------------------------------------
@@ -62,6 +63,7 @@ app.get("/error", (_req, _res) => {
 // ----------------------------------------------------------------
 
 app.use("/admin-drops", adminDropEventsRoutes)
+app.use("/public-drops", publicDropEventsRoutes)
 
 // ----------------------------------------------------------------
 // Error handling
