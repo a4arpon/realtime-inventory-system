@@ -87,8 +87,8 @@ export type DropScalarFieldEnum = (typeof DropScalarFieldEnum)[keyof typeof Drop
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  session: 'session'
+  username: 'username',
+  sessionId: 'sessionId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

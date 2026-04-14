@@ -6,11 +6,11 @@ const createOne = z.object({
   totalStock: z.number().check(z.int(), z.positive())
 })
 
-const updateOne = z.extend(createOne, {
-  availableStock: z.number().check(z.int(), z.positive())
+const adjustStock = z.object({
+  amount: z.number().check(z.int(), z.positive())
 })
 
 export const dropEventsZSchemas = {
   createDrop: createOne,
-  updateDrop: z.partial(updateOne)
+  adjustStock: adjustStock
 }

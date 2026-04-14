@@ -16,7 +16,7 @@ export function errorHandler(
       })
     )
   }
-  console.error(err)
+  console.error("Application layer error: ", err)
   return res.status(500).json(
     response({
       success: false,

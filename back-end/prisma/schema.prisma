@@ -27,9 +27,9 @@ model Drop {
 }
 
 model User {
-  id      String @id @default(uuid())
-  name    String
-  session String @unique()
+  id        String @id @default(uuid())
+  username  String
+  sessionId String @unique()
 
   // purchases    Purchase[]
   reservations Reservation[]

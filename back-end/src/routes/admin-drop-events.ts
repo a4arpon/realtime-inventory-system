@@ -9,6 +9,12 @@ export const adminDropEventsRoutes = Router()
 
 adminDropEventsRoutes.use(adminGuard)
 
+adminDropEventsRoutes.get(
+  "/get-drops",
+
+  adminDropEventsController.getDrops
+)
+
 adminDropEventsRoutes.post(
   "/create-drop",
 
@@ -17,8 +23,10 @@ adminDropEventsRoutes.post(
   adminDropEventsController.createDrop
 )
 
-adminDropEventsRoutes.get(
-  "/get-drops",
+adminDropEventsRoutes.post(
+  "/adjust-drop-stock",
 
-  adminDropEventsController.getDrops
+  zValidate(dropEventsZSchemas.adjustStock),
+
+  adminDropEventsController.adjustDropStock
 )

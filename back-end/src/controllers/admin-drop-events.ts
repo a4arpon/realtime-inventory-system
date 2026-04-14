@@ -30,7 +30,14 @@ async function getDrops() {
   })
 }
 
+async function adjustDropStock(req: Request) {
+  return response({
+    message: "Drop stock updated"
+  })
+}
+
 export const adminDropEventsController = {
   createDrop: apiHandler(createDrop),
-  getDrops: apiHandler(getDrops)
+  getDrops: apiHandler(getDrops),
+  adjustDropStock: apiHandler(adjustDropStock)
 }
