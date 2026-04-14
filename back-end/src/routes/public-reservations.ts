@@ -2,6 +2,8 @@ import { Router } from "express"
 
 import { publicReservationsController } from "#app/controllers/public-reservations"
 import { authGuard } from "#app/middleware/demo-auth-guard"
+import { zValidate } from "#app/middleware/zod-validator"
+import { uuidParamSchema } from "#app/validators/common"
 
 export const publicReservationsRoutes = Router()
 
@@ -11,6 +13,14 @@ publicReservationsRoutes.get(
   "/my-reservations",
 
   publicReservationsController.myReservations
+)
+
+publicReservationsRoutes.post(
+  "/reserve-drop",
+
+  zValidate(uuidParamSchema),
+
+  publicReservationsController.createReservation
 )
 
 publicReservationsRoutes.post(

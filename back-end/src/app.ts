@@ -8,6 +8,8 @@ import { ENV } from "./config/env"
 import { errorHandler } from "./middleware/error"
 import { adminDropEventsRoutes } from "./routes/admin-drop-events"
 import { publicDropEventsRoutes } from "./routes/public-drop-events"
+import { publicReservationsRoutes } from "./routes/public-reservations"
+import { publicUsersRouter } from "./routes/public-users"
 import { AppError, BadRequestError, response } from "./utils/http"
 
 export const app = express()
@@ -64,6 +66,8 @@ app.get("/error", (_req, _res) => {
 
 app.use("/admin-drops", adminDropEventsRoutes)
 app.use("/public-drops", publicDropEventsRoutes)
+app.use("/public-reservations", publicReservationsRoutes)
+app.use("/public-users", publicUsersRouter)
 
 // ----------------------------------------------------------------
 // Error handling

@@ -4,8 +4,17 @@ import http from "node:http"
 import { app } from "./app"
 import { connectDb, disconnectDb } from "./config/database"
 import { ENV } from "./config/env"
+import { expireReservations } from "./services/reservation.services"
 
 const server = http.createServer(app)
+
+const cleanupInterval = setInterval(async () => {
+  try {
+    await expireReservations()
+  } catch (err) {
+    console.error("Expiration cleanup failed:", err)
+  }
+}, 10_000)
 
 server.listen(ENV.PORT, async () => {
   await connectDb()
@@ -27,6 +36,7 @@ if (ENV.isProd) {
     server.close(async () => {
       await disconnectDb()
 
+      clearInterval(cleanupInterval)
       console.log("HTTP server closed")
       process.exit(0)
     })
@@ -34,7 +44,7 @@ if (ENV.isProd) {
     setTimeout(() => {
       console.error("Force shutdown after timeout")
       process.exit(1)
-    }, 10_000)
+    }, 4_000)
   }
 
   process.on("SIGTERM", () => gracefulShutdown("SIGTERM"))

@@ -6,7 +6,7 @@ import { BadRequestError } from "#app/utils/http"
 export async function updateDropStock(
   client: typeof pSql | Prisma.TransactionClient,
   dropId: string,
-  amount: number
+  amount: number = 1
 ) {
   await client.drop.update({
     where: {
