@@ -11,6 +11,7 @@ import {
   UnauthorizedError
 } from "#app/utils/http"
 import type { dropIdSchema, reserveIdSchema } from "#app/validators/common"
+import { getSIO } from "#app/web-socket"
 
 async function myReservations(req: Request) {
   const sessionId = req.sessionId
@@ -56,10 +57,7 @@ async function purchaseReservedDrop(req: Request) {
 
   const trxResult = await pSql.$transaction(async (trx) => {
     const reservation = await trx.reservation.findUnique({
-      where: { id: reserveId },
-      include: {
-        drop: true
-      }
+      where: { id: reserveId }
     })
 
     if (!reservation) throw new BadRequestError("reservation: Not found")
@@ -82,11 +80,42 @@ async function purchaseReservedDrop(req: Request) {
 
     return {
       purchaseId: purchase.id,
-      dropId: reservation?.dropId,
-      drop: reservation.drop?.name,
-      quantity: reservation?.quantity,
-      price: reservation?.drop?.price
+      reservation: reservation
     }
+  })
+
+  const drop = await pSql.drop.findUnique({
+    where: {
+      id: trxResult?.reservation?.dropId
+    },
+    select: {
+      id: true,
+      availableStock: true,
+
+      purchases: {
+        take: 3,
+        orderBy: {
+          purchasedAt: "desc"
+        },
+        select: {
+          quantity: true,
+          user: {
+            select: {
+              username: true
+            }
+          }
+        }
+      }
+    }
+  })
+
+  getSIO().emit("realtime-drop:inventory", {
+    dropId: drop?.id,
+    availableStock: drop?.availableStock
+  })
+  getSIO().emit("realtime-drop:purchases", {
+    dropId: drop?.id,
+    purchases: drop?.purchases
   })
 
   return response({

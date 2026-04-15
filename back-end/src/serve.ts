@@ -5,8 +5,11 @@ import { app } from "./app"
 import { connectDb, disconnectDb } from "./config/database"
 import { ENV } from "./config/env"
 import { expireReservations } from "./services/reservation.services"
+import { initSocket } from "./web-socket"
 
 const server = http.createServer(app)
+
+initSocket(server)
 
 const cleanupInterval = setInterval(async () => {
   try {
@@ -14,7 +17,7 @@ const cleanupInterval = setInterval(async () => {
   } catch (err) {
     console.error("Expiration cleanup failed:", err)
   }
-}, 10_000)
+}, 20_000)
 
 server.listen(ENV.PORT, async () => {
   await connectDb()

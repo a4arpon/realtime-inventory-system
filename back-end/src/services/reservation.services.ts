@@ -1,5 +1,6 @@
 import { pSql } from "#app/config/database"
 import { BadRequestError } from "#app/utils/http"
+import { getSIO } from "#app/web-socket"
 
 import { updateDropStock } from "./drop.services"
 
@@ -36,11 +37,27 @@ export async function expireReservations() {
     )
   })
 
+  const uniqueDropIds = [...new Set(expired.map((r) => r.dropId))]
+
+  const dropsWithStock = await Promise.all(
+    uniqueDropIds.map(async (dropId) => {
+      const drop = await pSql.drop.findUnique({
+        where: { id: dropId },
+        select: { availableStock: true }
+      })
+      return { dropId, availableStock: drop?.availableStock ?? 0 }
+    })
+  )
+
+  for (const { dropId, availableStock } of dropsWithStock) {
+    getSIO().emit("realtime-drop:inventory", { dropId, availableStock })
+  }
+
   return { expired }
 }
 
 export async function atomicReserve(userId: string, dropId: string) {
-  return await pSql.$transaction(
+  const trxResponse = await pSql.$transaction(
     async (tx) => {
       const existing = await tx.reservation.findFirst({
         where: { userId: userId, dropId: dropId, status: "active" }
@@ -75,4 +92,21 @@ export async function atomicReserve(userId: string, dropId: string) {
       isolationLevel: "Serializable"
     }
   )
+
+  const drop = await pSql.drop.findUnique({
+    where: {
+      id: dropId
+    },
+    select: {
+      id: true,
+      availableStock: true
+    }
+  })
+
+  getSIO().emit("realtime-drop:inventory", {
+    dropId: drop?.id,
+    availableStock: drop?.availableStock
+  })
+
+  return trxResponse
 }

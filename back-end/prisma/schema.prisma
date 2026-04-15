@@ -48,7 +48,6 @@ model Reservation {
   user User @relation(fields: [userId], references: [id])
   drop Drop @relation(fields: [dropId], references: [id])
 
-  @@unique([userId, dropId, status])
   @@index([expiresAt, status])
 }
 
