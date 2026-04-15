@@ -7,8 +7,6 @@ import { updateDropStock } from "./drop.services"
 export async function expireReservations() {
   const currentTime = new Date()
 
-  console.log("Clearing expired reservations: ", currentTime.toISOString())
-
   // Note: raw SQL used to SKIP LOCKED for multi-node safety
   const expired = await pSql.$queryRaw<Array<{ id: string; dropId: string }>>`
       SELECT id, "dropId"

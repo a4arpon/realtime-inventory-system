@@ -17,7 +17,7 @@ const cleanupInterval = setInterval(async () => {
   } catch (err) {
     console.error("Expiration cleanup failed:", err)
   }
-}, 20_000)
+}, 10_000)
 
 server.listen(ENV.PORT, async () => {
   await connectDb()
