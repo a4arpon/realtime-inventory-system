@@ -11,8 +11,6 @@ Users can browse products, reserve an item for 60 seconds, and complete the purc
 npm install
 ```
 
-````
-
 ### 2. Set up environment variables
 
 Create a `.env` file (copy from `.env.example`):
@@ -202,15 +200,45 @@ All stock changes will be broadcast via WebSocket – open two browser tabs to s
 ## 🚢 Deployment notes
 
 - **Database** – use Neon (serverless PostgreSQL) for free tier.
-- **Backend** – can be deployed to Vercel (Node.js runtime) or any traditional host (Render, Railway, DigitalOcean).
+- **Backend** – Deployed via Dockerfile
 - **Environment variables** – set `DATABASE_URL`, `FRONTEND_URL`, `PORT`.
 - **WebSocket** – works out of the box on most platforms (Vercel requires a custom server configuration – see Vercel docs).
 
 ---
 
-## 📚 Full API reference (Postman / Insomnia)
+## 🔮 Possible Improvements (if more time)
 
-All endpoints are described above. For detailed request/response examples, check the source code in `src/controllers/` and `src/routes/`.
+- **Authentication** – Replace the static admin token with proper JWT (or OAuth) and store hashed credentials.
+- **Soft deletes** – Add `deletedAt` to `Drop` so admins can hide drops without losing history.
+- **Idempotency** – Add idempotency keys on `reserve` and `purchase` to prevent double processing if the client retries.
+- **Observability** – Structured logging (e.g., Pino) and a `/metrics` endpoint for Prometheus.
+- **Rate limiting per user** – Currently it’s global; use Redis to limit each sessionId separately.
+- **Connection pooling** – Tune Prisma’s `connection_limit` based on serverless vs. traditional deployment.
+- **Testing** – Add integration tests for the whole reservation → purchase flow using Supertest and a test database.
 
----
-````
+## ⚠️ Current System Limitations
+
+- **Single‑node background job** – The expiration `setInterval` runs only on the instance that starts it. In a multi‑node production environment you would need a distributed cron (e.g., `pg-boss` or a separate worker).
+- **No fallback for WebSocket disconnects** – If a client loses connection, it won’t receive stock updates until it reconnects (no state replay).
+- **Admin token is hardcoded** – Not suitable for real deployments; should be read from environment variables and rotated.
+- **No database read replicas** – All reads/writes go to the same primary. Under extreme load (e.g., 1000+ concurrent reserves) you might hit contention.
+- **Price stored as `Float`** – Using `Decimal` (or storing cents as integer) would avoid floating‑point rounding errors in financial calculations.
+
+## 💭 My Opinion About Thinking Differently
+
+If I were to rebuild this from scratch, I would **separate the write path from the read path**:
+
+- **Write path (reserve/purchase/expire)** – Stay with PostgreSQL + Prisma. It’s reliable and ACID‑compliant.
+- **Read path (real‑time stock)** – Instead of broadcasting the full drop object, I would **stream only stock deltas** through Redis Pub/Sub or a lightweight message bus (NATS). Each server instance would subscribe to a channel and forward to its connected WebSocket clients. This would scale horizontally without extra database queries.
+
+**Why?**  
+The current approach queries the database again after every mutation to get the latest stock. Under heavy load, this adds unnecessary round trips. A better design:
+
+1. Reserve/purchase updates the database and **publishes a `stock_changed` event** containing the new stock number.
+2. WebSocket servers subscribe to that event and push it directly to clients – no extra `SELECT`.
+
+Also, I would **remove the `availableStock` column** and compute it on the fly:  
+`availableStock = totalStock - (SELECT COUNT(*) FROM Reservation WHERE status = 'active')`  
+This makes the schema even simpler and avoids manual increment/decrement errors. But it requires a different concurrency strategy (optimistic locking or `FOR UPDATE` on the related rows).
+
+For a high‑traffic sneaker drop, the current solution is already solid. The “different” approach would trade simplicity for theoretical scalability – but for 99% of projects, what you have now is more than enough.
