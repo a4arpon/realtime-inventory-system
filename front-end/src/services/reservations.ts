@@ -1,5 +1,3 @@
-import { toast } from "sonner"
-
 import { fetchClient } from "#app/lib/api"
 import type { PurchaseResponseT, ReservationT } from "#app/types/api-res"
 
@@ -31,11 +29,7 @@ export async function getMyReservations(): Promise<ReservationT[]> {
 export async function purchaseReservedDrop(
   reserveId: string
 ): Promise<PurchaseResponseT> {
-  const {
-    success,
-    message,
-    data: purchase
-  } = await fetchClient<PurchaseResponseT>(
+  const { data: purchase } = await fetchClient<PurchaseResponseT>(
     "/public-reservations/purchase-reserved-drop",
     {
       method: "POST",
@@ -43,10 +37,6 @@ export async function purchaseReservedDrop(
       useAuth: true
     }
   )
-
-  if (success) {
-    toast.success(message)
-  }
 
   return purchase
 }

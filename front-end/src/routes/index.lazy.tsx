@@ -1,4 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
 
 import { DropCard, DropCardSkeleton } from "#app/components/shared/DropCard"
 import { useDrops } from "#app/hooks/useDrops"
@@ -12,7 +13,16 @@ export const Route = createLazyFileRoute("/")({
 function RouteComponent() {
   const { data: user, isLoading: sessionLoading } = useSession()
   const { data: drops, isLoading: dropsLoading, error } = useDrops()
-  const { mutate: reserve, isPending: isReserving } = useReserveMutation()
+  const { mutate: reserve } = useReserveMutation()
+
+  const [reservingDropId, setReservingDropId] = useState<string | null>(null)
+
+  const handleReserve = (dropId: string) => {
+    setReservingDropId(dropId)
+    reserve(dropId, {
+      onSettled: () => setReservingDropId(null)
+    })
+  }
 
   if (sessionLoading || dropsLoading) {
     return (
@@ -46,8 +56,8 @@ function RouteComponent() {
           <DropCard
             key={drop.id}
             drop={drop}
-            onReserve={() => reserve(drop.id)}
-            isReserving={isReserving}
+            onReserve={() => handleReserve(drop.id)}
+            isReserving={reservingDropId === drop.id}
           />
         ))}
       </div>

@@ -1,6 +1,5 @@
 import { ShoppingCart } from "lucide-react"
-import { useState } from "react"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 
 import { Badge } from "#app/components/ui/badge"
 import { Button } from "#app/components/ui/button"
@@ -15,7 +14,6 @@ import { useMyReservations } from "#app/hooks/useReservations"
 import { usePurchaseMutation } from "#app/hooks/useReservations"
 import type { ReservationT } from "#app/types/api-res"
 
-// Helper to format remaining seconds to mm:ss
 function formatTime(seconds: number): string {
   const mins = Math.floor(seconds / 60)
   const secs = seconds % 60
@@ -28,7 +26,7 @@ function ReservationItem({
   isPurchasing
 }: {
   reservation: ReservationT
-  onPurchase: (reservationId: string) => void
+  onPurchase: (id: string) => void
   isPurchasing: boolean
 }) {
   const [timeLeft, setTimeLeft] = useState<number>(() => {
@@ -37,7 +35,10 @@ function ReservationItem({
     return Math.max(0, Math.floor((expires - now) / 1000))
   })
 
+  const [isPurchaseLocalState, setIsPurchaseLocalState] = useState(false)
+
   useEffect(() => {
+    if (reservation.status !== "active") return
     if (timeLeft <= 0) return
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -49,9 +50,12 @@ function ReservationItem({
       })
     }, 1000)
     return () => clearInterval(interval)
-  }, [timeLeft])
+  }, [timeLeft, reservation.status])
 
-  const isExpired = timeLeft === 0
+  const isActive = reservation.status === "active"
+  const isExpired = reservation.status === "expired"
+  const isCompleted = reservation.status === "completed"
+  const expiredTimer = isActive && timeLeft === 0
 
   return (
     <div className="flex items-center justify-between rounded-lg border p-3">
@@ -60,26 +64,37 @@ function ReservationItem({
         <p className="text-muted-foreground text-sm">
           ${(reservation.drop.price / 100).toFixed(2)}
         </p>
-        {!isExpired ? (
+        {isActive && !expiredTimer && (
           <p className="text-xs text-yellow-600">
             ⏱️ {formatTime(timeLeft)} left
           </p>
-        ) : (
+        )}
+        {isActive && expiredTimer && (
+          <p className="text-xs text-red-500">Expired (refresh to update)</p>
+        )}
+        {isExpired && (
           <p className="text-xs text-red-500">
-            Expired{" "}
-            {new Date(reservation?.expiresAt)?.toLocaleString("en-US", {
-              hour12: true
-            })}
+            Expired on {new Date(reservation.expiresAt).toLocaleString()}
           </p>
         )}
+        {isCompleted && <p className="text-xs text-green-600">Purchased ✓</p>}
       </div>
-      <Button
-        size="sm"
-        onClick={() => onPurchase(reservation.id)}
-        disabled={isExpired || isPurchasing}
-      >
-        {isPurchasing ? "Purchasing..." : "Purchase"}
-      </Button>
+      {isActive && !expiredTimer && (
+        <Button
+          onClick={() => {
+            onPurchase(reservation.id)
+            setIsPurchaseLocalState(true)
+          }}
+          disabled={isPurchaseLocalState}
+        >
+          {isPurchasing ? "Purchasing..." : "Purchase"}
+        </Button>
+      )}
+      {(isExpired || isCompleted || expiredTimer) && (
+        <Badge variant="outline" className="text-xs">
+          {isExpired ? "Expired" : isCompleted ? "Completed" : "Expired"}
+        </Badge>
+      )}
     </div>
   )
 }
@@ -87,7 +102,8 @@ function ReservationItem({
 export function ReservationBadge() {
   const [open, setOpen] = useState(false)
   const { data: reservations, isLoading, refetch } = useMyReservations()
-  const { mutate: purchase, isPending: isPurchasing } = usePurchaseMutation()
+  const { mutate: purchase } = usePurchaseMutation()
+  const [purchasingId, setPurchasingId] = useState<string | null>(null)
 
   const activeCount =
     reservations?.filter(
@@ -95,18 +111,11 @@ export function ReservationBadge() {
     ).length ?? 0
 
   const handlePurchase = (reservationId: string) => {
+    setPurchasingId(reservationId)
     purchase(reservationId, {
+      onSettled: () => setPurchasingId(null),
       onSuccess: () => {
-        // Close dialog after purchase if no active reservations left
-        refetch().then(({ data }) => {
-          if (
-            !data?.some(
-              (r) => r.status === "active" && new Date(r.expiresAt) > new Date()
-            )
-          ) {
-            setOpen(false)
-          }
-        })
+        refetch()
       }
     })
   }
@@ -127,7 +136,7 @@ export function ReservationBadge() {
             )}
           </Button>
         }
-      ></DialogTrigger>
+      />
       <DialogContent className="sm:max-w-md lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle>My Reservations</DialogTitle>
@@ -148,7 +157,7 @@ export function ReservationBadge() {
                   key={res.id}
                   reservation={res}
                   onPurchase={handlePurchase}
-                  isPurchasing={isPurchasing}
+                  isPurchasing={purchasingId === res.id}
                 />
               ))}
             </div>

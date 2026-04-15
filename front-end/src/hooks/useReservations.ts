@@ -21,6 +21,7 @@ export function useReserveMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["drops", "all"] })
       queryClient.invalidateQueries({ queryKey: ["reservations", "my"] })
+
       toast.success("Reserved! You have 60 seconds to purchase.")
     }
   })
@@ -32,6 +33,7 @@ export function usePurchaseMutation() {
     mutationFn: (reserveId: string) => purchaseReservedDrop(reserveId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["drops", "all"] })
+      queryClient.invalidateQueries({ queryKey: ["reservations", "my"] })
       queryClient.invalidateQueries({ queryKey: ["reservations", "my"] })
       toast.success("Purchase completed!")
     }
