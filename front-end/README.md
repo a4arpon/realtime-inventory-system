@@ -1,73 +1,106 @@
-# React + TypeScript + Vite
+# Sneaker Drop – Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Real‑time inventory dashboard for a limited‑edition sneaker drop.  
+Built with React, TanStack Router, TanStack Query, Socket.IO, and shadcn/ui.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Live product listing** – Drops are fetched from the backend and displayed as cards.
+- **Real‑time stock updates** – WebSocket connection (`realtime-drop:inventory`) updates stock counts instantly across all open tabs.
+- **Atomic reservation** – Click “Reserve” to temporarily lock a product for 60 seconds. Prevents overselling via backend transactions.
+- **Purchase flow** – Active reservations are shown in a floating badge; each reservation has a countdown timer and a “Purchase” button.
+- **Top 3 purchasers** – Each drop card displays the three most recent buyers (usernames) directly from the API.
+- **Session management** – A `sessionId` is automatically created and stored in `localStorage`; used for all authenticated requests.
 
-## React Compiler
+## 🧰 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React** + TypeScript
+- **TanStack Router** – type‑safe routing with lazy loading
+- **TanStack Query** – data fetching, caching, and mutation handling
+- **Socket.IO client** – real‑time bidirectional communication (read‑only)
+- **Tailwind CSS** + **shadcn/ui** – clean, responsive UI components
+- **Vite** – fast build tool
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Install dependencies
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname
-      }
-      // other options...
-    }
-  }
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Set up environment variables
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x"
-import reactDom from "eslint-plugin-react-dom"
+Create a `.env` file in the root directory:
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname
-      }
-      // other options...
-    }
-  }
-])
+```env
+VITE_API_URL=http://localhost:4000
 ```
+
+Replace the URL with your backend API address (the same one that serves WebSocket connections).
+
+### 3. Run the development server
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:5173` (or the next free port).
+
+### 4. Build for production
+
+```bash
+npm run build
+```
+
+The output is in the `dist` folder.
+
+## 📁 Project Structure (simplified)
+
+```
+src/
+├── assets/            # Global styles, images
+├── components/
+│   └── shared/        # DropCard, ReservationBadge, skeletons
+├── hooks/             # useDrops, useReservations, useSession
+├── lib/               # api.ts, socket.ts, tw.ts
+├── routes/            # TanStack Router routes (__root, index.lazy)
+├── services/          # API calls (drops, reservations, user-profile)
+├── types/             # TypeScript definitions (DropT, ReservationT, etc.)
+└── main.tsx           # App entry, QueryClient, Socket init, Router
+```
+
+## 🔌 Key Integrations
+
+### WebSocket (read‑only)
+
+- The socket is initialized in `main.tsx` with the query client.
+- Listens to `realtime-drop:inventory` and `realtime-drop:purchases`.
+- Updates React Query cache directly – no manual refetching needed.
+
+### Authentication (demo)
+
+- The backend expects a `Bearer <sessionId>` header.
+- On first visit, the frontend calls `/public-users/create-user` and stores the returned `sessionId` in `localStorage`.
+- All subsequent authenticated requests use this token automatically.
+
+## 📦 Scripts
+
+```json
+{
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "preview": "vite preview"
+}
+```
+
+## 📝 Notes
+
+- Countdown timers are local to each reservation item and do not cause global re‑renders.
+- The UI is responsive and works on desktop and mobile.
+
+---
+
+**Backend Folder** – contains the Express + Prisma + PostgreSQL API.
+
+**Live demo** – https://realtime-inventory-system-techzu.vercel.app/
