@@ -16,12 +16,6 @@ async function getDrops() {
             }
           }
         }
-        // include: {
-
-        //   user: {
-        //     select: { username: true }
-        //   }
-        // }
       }
     }
   })
