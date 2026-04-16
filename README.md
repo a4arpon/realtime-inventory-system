@@ -14,7 +14,7 @@ A technical assessment submission. Implements:
 - Purchase flow (only if reserved)
 - Admin API to create drops (no UI)
 
-## How It Works (Plain English)
+## How It Works
 
 **Backend (Node + Express + Prisma + PostgreSQL)**
 
